@@ -109,3 +109,7 @@ def in_perimeter(latitude, longitude):
         return True
     else:
         return False
+
+
+c = generate_coordinate()
+print(c.to_string_dms())
