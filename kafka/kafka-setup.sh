@@ -1,1 +1,0 @@
-# Script to set up Kafka topics and configurations.
