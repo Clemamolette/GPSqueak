@@ -21,6 +21,7 @@ même chose pour la ongitude mais avec les directions est (E) si positive et oue
 """
 
 import numpy as np
+from matplotlib import pyplot as plt
 
 """  Global parameters """
 MIN_LATITUDE = -90.
@@ -28,6 +29,7 @@ MAX_LATITUDE = 90.
 MIN_LONGITUDE = -180.
 MAX_LONGITUDE = 180.
 
+# coordinates of the area around Pougne-Hérisson (French city)
 ACTIVE_MIN_LATITUDE = 46.657240
 ACTIVE_MAX_LATITUDE = 46.664955
 ACTIVE_MIN_LONGITUDE = -0.408307
@@ -103,14 +105,7 @@ def generate_coordinate():
     return coord
 
 def in_perimeter(latitude, longitude):
-        if (MIN_LATITUDE < latitude) and (latitude < MAX_LATITUDE) and (MIN_LONGITUDE < longitude) and (longitude < MAX_LONGITUDE):
-            return True
-        else:
-            return False
-
-c = generate_coordinate()
-print(c.get_latitude(), c.get_longitude())
-print(c.to_string_dms())
-c.next_coordinate()
-print(c.get_latitude(), c.get_longitude())
-print(c.to_string_dms())
+    if (MIN_LATITUDE < latitude) and (latitude < MAX_LATITUDE) and (MIN_LONGITUDE < longitude) and (longitude < MAX_LONGITUDE):
+        return True
+    else:
+        return False
