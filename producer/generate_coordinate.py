@@ -13,9 +13,9 @@ degré entre la position et le prime meridian
 import numpy as np
 
 
-MIN_LATITUDE = 0.
+MIN_LATITUDE = -90.
 MAX_LATITUDE = 90.
-MIN_LONGITUDE = 0.
+MIN_LONGITUDE = -180.
 MAX_LONGITUDE = 180.
 
 class Coordinate:
