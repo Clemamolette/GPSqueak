@@ -1,0 +1,1 @@
+# Python script to produce coordinates to the Kafka topic.

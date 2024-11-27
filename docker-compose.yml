@@ -1,0 +1,1 @@
+# Defines the Docker services for the producer, Kafka broker, consumer, front-end, and database.
