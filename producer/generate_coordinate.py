@@ -29,20 +29,22 @@ MAX_LATITUDE = 90.
 MIN_LONGITUDE = -180.
 MAX_LONGITUDE = 180.
 
-# coordinates of the area around Pougne-Hérisson (French city)
+""" coordinates of the area around Pougne-Hérisson (French city) """
 ACTIVE_MIN_LATITUDE = 46.657240
 ACTIVE_MAX_LATITUDE = 46.664955
 ACTIVE_MIN_LONGITUDE = -0.408307
 ACTIVE_MAX_LONGITUDE = -0.387321
 
 class Coordinate:
-    """ initialisation """
+    """ Defines one position """
+    
     def __init__(self, latitude = 0., longitude = 0.):
+        """ initialisation """
         self.latitude = latitude
         self.longitude = longitude
     
-    """ Returns the new coordinates after the target moved """
     def next_coordinate(self):
+        """ Updates self coordinates after the target moved """
         delta = 0.000025 #max value to move around
 
         delta_latitude = np.random.uniform(-delta, delta)
@@ -54,31 +56,6 @@ class Coordinate:
         while not (in_perimeter(self.latitude, self.longitude + delta_longitude)):
             delta_longitude = np.random.uniform(-delta, delta)
         self.longitude += delta_longitude
-
-
-    """ Return a string describing the coordinates in DD format """
-    def to_string_dd(self):
-        return "Latitude : " + str(self.latitude) + " , Longitude : " + str(self.longitude)
-    
-    """ Return a string describing the coordinates in DMS format"""
-    def to_string_dms(self):
-        def convert_to_dms(x):
-            x = abs(x)
-            degrees = int(x)
-            minutes = int((x - degrees) * 60)
-            seconds = round( ((x-degrees)*60 -minutes) * 60 , 2)
-            return degrees, minutes, seconds
-
-        degrees_lalitude, minutes_latitude, seconds_latitude = convert_to_dms(self.latitude)
-        degrees_longitude, minutes_longitude, seconds_longitude = convert_to_dms(self.longitude)
-
-        direction_latitude = "N" if self.latitude >= 0 else  "S"
-        direction_longitude = "E" if self.longitude >= 0 else "W"
-
-        latitude_dms = f"{degrees_lalitude}°{minutes_latitude}'{seconds_latitude}\" {direction_latitude}"
-        longitude_dms = f"{degrees_longitude}°{minutes_longitude}'{seconds_longitude}\" {direction_longitude}"
-
-        return str(latitude_dms) + " " + str(longitude_dms)
     
     """ Getters and setters """
     def set_latitude(self, latitude):
@@ -96,20 +73,41 @@ class Coordinate:
     def get_longitude(self):
         return self.longitude
 
+    def to_string_dd(self):
+        """ Return a string describing the coordinates in DD format """
+        return "Latitude : " + str(self.latitude) + " , Longitude : " + str(self.longitude)
+    
+    def to_string_dms(self):
+        """ Return a string describing the coordinates in DMS format"""
+        def convert_to_dms(x):
+            x = abs(x)
+            degrees = int(x)
+            minutes = int((x - degrees) * 60)
+            seconds = round( ((x-degrees)*60 -minutes) * 60 , 2)
+            return degrees, minutes, seconds
 
-""" Returns an randomly-initialized Coordinate object """
+        degrees_lalitude, minutes_latitude, seconds_latitude = convert_to_dms(self.latitude)
+        degrees_longitude, minutes_longitude, seconds_longitude = convert_to_dms(self.longitude)
+
+        direction_latitude = "N" if self.latitude >= 0 else  "S"
+        direction_longitude = "E" if self.longitude >= 0 else "W"
+
+        latitude_dms = f"{degrees_lalitude}°{minutes_latitude}'{seconds_latitude}\" {direction_latitude}"
+        longitude_dms = f"{degrees_longitude}°{minutes_longitude}'{seconds_longitude}\" {direction_longitude}"
+
+        return str(latitude_dms) + " " + str(longitude_dms)
+
+
 def generate_coordinate():
+    """ Returns an randomly-initialized Coordinate object """
     latitude = np.random.uniform(ACTIVE_MIN_LATITUDE, ACTIVE_MAX_LATITUDE)
     longitude = np.random.uniform(ACTIVE_MIN_LONGITUDE, ACTIVE_MAX_LONGITUDE)
     coord = Coordinate(latitude, longitude)
     return coord
 
 def in_perimeter(latitude, longitude):
+    """ Returns boolean value for if the position is within the defined perimeter """
     if (MIN_LATITUDE < latitude) and (latitude < MAX_LATITUDE) and (MIN_LONGITUDE < longitude) and (longitude < MAX_LONGITUDE):
         return True
     else:
         return False
-
-
-c = generate_coordinate()
-print(c.to_string_dms())
