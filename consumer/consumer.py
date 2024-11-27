@@ -1,0 +1,1 @@
+# Python script to consume coordinates from the Kafka topic and interact with the database.
