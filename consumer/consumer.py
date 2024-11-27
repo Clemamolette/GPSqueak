@@ -2,13 +2,13 @@
 
 
 
-# !!! NOT TESTED !!!
 
 
 from kafka import KafkaConsumer
 import psycopg2
 import json
 
+# !!! NOT TESTED !!!
 consumer = KafkaConsumer('COORDINATE',
                          bootstrap_servers=['localhost:8080'],
                          #auto_offset_reset='earliest',
@@ -17,13 +17,14 @@ consumer = KafkaConsumer('COORDINATE',
                          value_deserializer=lambda x: json.loads(x.decode('utf-8')))
 
 
+# TESTED :D
 # Database connection parameters
 db_params = {
     'dbname': 'gpsdatabase',
     'user': 'admin',
     'password': 'admin',
     'host': 'localhost',
-    'port': '8080'
+    'port': '5432'
 }
 
 # Function to insert data into the database
