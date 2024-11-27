@@ -19,11 +19,11 @@ consumer = KafkaConsumer('COORDINATE',
 
 # Database connection parameters
 db_params = {
-    'dbname': 'your_database_name',
-    'user': 'your_username',
-    'password': 'your_password',
-    'host': 'localhost',  # e.g., 'localhost'
-    'port': '8080'   # e.g., '5432'
+    'dbname': 'gpsdatabase',
+    'user': 'admin',
+    'password': 'admin',
+    'host': 'localhost',
+    'port': '8080'
 }
 
 # Function to insert data into the database
@@ -35,7 +35,7 @@ def insert_data(coordinate):
 
         # SQL query to insert data
         insert_query = """
-        INSERT INTO coordinates (ip, x, y)
+        INSERT INTO coordinates (ip, latitude, longitude)
         VALUES (%s, %s, %s)
         """
 
