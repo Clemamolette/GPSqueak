@@ -28,6 +28,11 @@ MAX_LATITUDE = 90.
 MIN_LONGITUDE = -180.
 MAX_LONGITUDE = 180.
 
+ACTIVE_MIN_LATITUDE = 46.657240
+ACTIVE_MAX_LATITUDE = 46.664955
+ACTIVE_MIN_LONGITUDE = -0.408307
+ACTIVE_MAX_LONGITUDE = -0.387321
+
 class Coordinate:
     """ initialisation """
     def __init__(self, latitude = 0., longitude = 0.):
@@ -36,10 +41,19 @@ class Coordinate:
     
     """ Returns the new coordinates after the target moved """
     def next_coordinate(self):
-        # à faire de manière cohérente
-        self.latitude += 1.
-        self.longitude += 1.
-    
+        delta = 0.000025 #max value to move around
+
+        delta_latitude = np.random.uniform(-delta, delta)
+        while not (in_perimeter(self.latitude + delta_latitude, self.longitude)):
+            delta_latitude = np.random.uniform(-delta, delta)
+        self.latitude += delta_latitude
+
+        delta_longitude = np.random.uniform(-delta, delta)
+        while not (in_perimeter(self.latitude, self.longitude + delta_longitude)):
+            delta_longitude = np.random.uniform(-delta, delta)
+        self.longitude += delta_longitude
+
+
     """ Return a string describing the coordinates in DD format """
     def to_string_dd(self):
         return "Latitude : " + str(self.latitude) + " , Longitude : " + str(self.longitude)
@@ -83,12 +97,20 @@ class Coordinate:
 
 """ Returns an randomly-initialized Coordinate object """
 def generate_coordinate():
-    latitude = np.random.uniform(MIN_LATITUDE, MAX_LATITUDE)
-    longitude = np.random.uniform(MIN_LONGITUDE, MAX_LONGITUDE)
+    latitude = np.random.uniform(ACTIVE_MIN_LATITUDE, ACTIVE_MAX_LATITUDE)
+    longitude = np.random.uniform(ACTIVE_MIN_LONGITUDE, ACTIVE_MAX_LONGITUDE)
     coord = Coordinate(latitude, longitude)
     return coord
 
+def in_perimeter(latitude, longitude):
+        if (MIN_LATITUDE < latitude) and (latitude < MAX_LATITUDE) and (MIN_LONGITUDE < longitude) and (longitude < MAX_LONGITUDE):
+            return True
+        else:
+            return False
 
 c = generate_coordinate()
+print(c.get_latitude(), c.get_longitude())
+print(c.to_string_dms())
+c.next_coordinate()
 print(c.get_latitude(), c.get_longitude())
 print(c.to_string_dms())
