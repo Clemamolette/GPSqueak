@@ -47,7 +47,10 @@ def fetch_data(query : str, cursor) -> dict:
     try:
         cursor.execute(query)
         query_result = cursor.fetchall()
-        query_result = [[query_result[i][j] for j in range(len(query_result[0]))] for i in range(len(query_result))] # list of list of data
+        try:
+            query_result = [[query_result[i][j] for j in range(len(query_result[0]))] for i in range(len(query_result))] # list of list of data
+        except:
+            pass
         return query_result
 
     except (Exception, psycopg2.DatabaseError) as error:
