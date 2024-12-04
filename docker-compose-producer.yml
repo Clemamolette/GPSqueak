@@ -1,0 +1,15 @@
+
+
+services:
+  producer-1:
+    image: producer
+    build: ./producer
+    environment:
+      PRODUCER_IP: IP1
+    
+    
+  producer-2:
+    image: producer
+    build: ./producer
+    environment:
+      PRODUCER_IP: IP2
