@@ -1,1 +1,2 @@
 # Lists the Python dependencies for the producer.
+kafka-python==2.0.2

@@ -1,0 +1,11 @@
+
+
+services:
+  producer-1:
+    image: producer
+    build: ./producer
+    
+    
+  # producer-2:
+  #   image: producer
+  #   build: ./producer
