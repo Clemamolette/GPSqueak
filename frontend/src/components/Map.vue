@@ -36,6 +36,12 @@ export default {
     var pathBlue = miceStore.bluePath;
     var pathBlack = miceStore.blackPath;
 
+    var c1 = [46.66351683019078, -0.4010184024809422];
+    var c2 = [46.661391638682026, -0.39771515366138493];
+
+    miceStore.addCoordBlue(c1);
+    miceStore.addCoordBlack(c2);
+
     var polylineBlue = L.polyline(pathBlue, {color: '#4b91bf', weight: '2',  dashArray: '2, 5', dashOffset: '0'}).addTo(map);
     var polylineBlack = L.polyline(pathBlack, {color: '#696969', weight: '2',  dashArray: '2, 5', dashOffset: '0'}).addTo(map);
 
