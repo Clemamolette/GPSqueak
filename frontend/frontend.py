@@ -1,1 +1,0 @@
-# Python script to serve the front-end API.

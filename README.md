@@ -30,4 +30,3 @@ db: `gps_db`
 ### Kafka 
 UI visible on `localhost:8080`.
 
-
