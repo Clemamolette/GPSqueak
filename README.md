@@ -3,14 +3,6 @@ Clementine Galloy, Noe Faucher & Mael Triquet
 
 <img src="rsc/logo_gpsqueak.png" width="500em">
 
-## Setup
-
-### Kafka
-
-Need to create the topic 'coordinate_from_tracker'. You can ruse the Kafka UI.
-
-
-
 
 ## Architecture
 

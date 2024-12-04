@@ -3,25 +3,10 @@
 from kafka import KafkaConsumer
 import psycopg2
 import json
+import time
+import logging
 
-# !!! NOT TESTED !!!
-consumer = KafkaConsumer('COORDINATE',
-                         bootstrap_servers=['localhost:9092'],
-                         #auto_offset_reset='earliest',
-                         #enable_auto_commit=True,
-                         #group_id='my-group',
-                         value_deserializer=lambda x: json.loads(x.decode('utf-8')))
-
-
-# TESTED :D
-# Database connection parameters
-db_params = {
-    'dbname': 'gpsdatabase',
-    'user': 'user',
-    'password': 'pass',
-    'host': 'localhost',
-    'port': '5432'
-}
+LOG = logging.Logger("Consumer")
 
 # Function to insert data into the database
 def insert_data(coordinate):
@@ -50,6 +35,40 @@ def insert_data(coordinate):
 
     except (Exception, psycopg2.DatabaseError) as error:
         print(f"Error: {error}")
+
+
+
+retries = 5
+
+
+while retries >= 0:
+    try:
+        LOG.info("Trying connection with kafka...")
+        consumer = KafkaConsumer('coordinate_from_tracker',
+                                bootstrap_servers=['kafka:9092'],
+                                group_id='coord-to-db',
+                                value_deserializer=lambda x: json.loads(x.decode('utf-8'))
+                                )
+        break
+    except Exception as e:
+        retries -= 1
+        LOG.warning(f"Fail to connect ({e}), retrying in 5 seconds...")
+        time.sleep(5)
+
+if retries < 0:
+    LOG.error("Fail to connect to broker!")
+    exit(1)
+    
+LOG.info("Connected to kafka!")
+
+# Database connection parameters
+db_params = {
+    'dbname': 'gps_db',
+    'user': 'user',
+    'password': 'pass',
+    'host': 'postgresql',
+    'port': '5432'
+}
 
 
 
