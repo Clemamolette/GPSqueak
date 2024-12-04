@@ -5,10 +5,10 @@ import db_tools as db
 app = FastAPI()
 
 db_params = {
-    'dbname': 'gpsdatabase',
-    'user': 'admin',
-    'password': 'admin',
-    'host': 'localhost',
+    'dbname': 'gps_db',
+    'user': 'user',
+    'password': 'pass',
+    'host': 'postgresql',
     'port': '5432'
 }
 db_connection, cursor = db.connect(db_params)
