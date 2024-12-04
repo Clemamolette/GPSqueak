@@ -31,7 +31,7 @@ export default {
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(map);
+    }).addTo(map);y
 
     var c1 = [46.66351683019078, -0.4010184024809422];
     var c2 = [46.661391638682026, -0.39771515366138493];
