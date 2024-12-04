@@ -33,12 +33,6 @@ export default {
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
-    var c1 = [46.66351683019078, -0.4010184024809422];
-    var c2 = [46.661391638682026, -0.39771515366138493];
-
-    miceStore.addCoordBlue(c1);
-    miceStore.addCoordBlack(c2);
-
     var pathBlue = miceStore.bluePath;
     var pathBlack = miceStore.blackPath;
 
