@@ -13,7 +13,7 @@ def insert_data(coordinate : dict, conn, cursor) -> None:
     try:
         insert_query = """
         INSERT INTO coordinates (ip, latitude, longitude)
-        VALUES (%s, %s, %s)
+        VALUES ('%s', %s, %s)
         """
 
         cursor.execute(insert_query, (coordinate['ip'], coordinate['latitude'], coordinate['longitude']))
@@ -41,6 +41,7 @@ def fetch_data(query : str, cursor) -> dict:
     
     Keyword arguments:
     query -- query to be passed on the database to fecth data. To insert data, please use insert_data
+    query_args -- arguments that should fill the query
     Return: results of the query in the form list of list
     """
     
@@ -48,7 +49,7 @@ def fetch_data(query : str, cursor) -> dict:
         cursor.execute(query)
         query_result = cursor.fetchall()
         try:
-            query_result = [[query_result[i][j] for j in range(len(query_result[0]))] for i in range(len(query_result))] # list of list of data
+            query_result = [[query_result[i][j] for j in range(len(query_result[i]))] for i in range(len(query_result))] # list of list of data
         except:
             pass
         return query_result
@@ -69,3 +70,21 @@ def disconnect(conn, cursor):
         conn.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(f"Error: {error}")
+
+def fetch_all_positions(ip : str, cursor) -> dict:
+    query = """
+        SELECT coordinates.latitude, coordinates.longitude FROM coordinates
+        WHERE coordinates.ip = '%s' """ % ip
+        
+    return fetch_data(query, cursor)
+
+def fetch_last_position(ip : str, cursor) -> dict:
+    query = """
+        SELECT coordinates.latitude, coordinates.longitude FROM coordinates
+        WHERE coordinates.ip = '%s'
+        ORDER BY coordinates.id DESC
+        LIMIT 1
+        """ % ip
+
+    res = fetch_data(query, cursor)
+    return res

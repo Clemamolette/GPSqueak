@@ -1,8 +1,7 @@
 # Python script to serve the front-end API.
 
 from fastapi import FastAPI
-from ..database import db_tools as db
-
+import db_tools as db
 app = FastAPI()
 
 db_params = {
@@ -16,22 +15,16 @@ db_connection, cursor = db.connect(db_params)
 
 @app.get("/position/{ip}/all")
 def get_all_position(ip : str) -> dict:
-    query = """
-        SELECT (coordinates.latitude, coordinates.longitude) FROM coordinates
-        WHERE coordinates.ip = """ + ip
-    
-    return db.fetch_data(query, db_connection, cursor)
+    res = db.fetch_all_positions(ip, cursor)
+    print(res)
+    return res
+
 
 @app.get("/position/{ip}")
 def get_position(ip : str) -> dict:
-    query = """
-        SELECT (coordinates.latitude, coordinates.longitude) FROM coordinates
-        WHERE coordinates.ip = """ + ip + """
-        ORDER BY DESC coordinates.id
-        LIMIT 1
-        """
-    
-    return db.fetch_data(query, db_connection, cursor, [ip])
+    res = db.fetch_last_position(ip, cursor)
+    print(res)
+    return res
 
 @app.get("/ip")
 def get_ip() -> dict:
