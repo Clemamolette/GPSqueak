@@ -1,7 +1,7 @@
 # Gotta Pursue the Squeak
 Clementine Galloy, Noe Faucher & Mael Triquet
 
-<img src="rsc/logo_gpsqueak.png" width="200em">
+<img src="rsc/logo_gpsqueak.png" width="500em">
 
 ## Setup
 
