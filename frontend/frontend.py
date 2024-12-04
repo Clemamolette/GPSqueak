@@ -1,8 +1,7 @@
 # Python script to serve the front-end API.
 
 from fastapi import FastAPI
-import psycopg2
-
+from ..database import db_tools as db
 
 app = FastAPI()
 
@@ -13,29 +12,24 @@ db_params = {
     'host': 'localhost',
     'port': '5432'
 }
-db_connection = psycopg2.connect(**db_params)
-cursor = db_connection.cursor()
+db_connection, cursor = db.connect(db_params)
 
-@app.get("/all_pos/{ip}")
+@app.get("/position/{ip}/all")
 def get_all_pos(ip : str) -> dict:
     query = """
-        SELECT * FROM coordinates
+        SELECT (coordinates.latitude, coordinates.longitude) FROM coordinates
         WHERE coordinates.ip = %s
         """
     
-    cursor.execute(query, ip)
-    query_result = db_connection.commit()
-    return query_result
+    return db.fetch_data(query, db_connection, cursor, [ip])
 
-@app.get("/last_pos/{ip}")
+@app.get("/position/{ip}")
 def get_last_pos(ip : str) -> dict:
     query = """
-        SELECT * FROM coordinates
+        SELECT (coordinates.latitude, coordinates.longitude) FROM coordinates
         WHERE coordinates.ip = %s
         ORDER BY DESC coordinates.id
         LIMIT 1
         """
     
-    cursor.execute(query, ip)
-    query_result = db_connection.commit()
-    return query_result
+    return db.fetch_data(query, db_connection, cursor, [ip])
