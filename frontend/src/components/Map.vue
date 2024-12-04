@@ -4,7 +4,6 @@
 
 <script>
 import L from "leaflet";
-
 import { useMiceStore } from "../stores/mice";
 
 var squeakIcon = L.Icon.extend({

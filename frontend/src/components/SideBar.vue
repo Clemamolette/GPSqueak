@@ -6,7 +6,6 @@
                 v-for="(image, index) in images" 
                 :key="index" 
                 :src="image" 
-                v-if="isMouseRunning(index)" 
                 alt="squeak icon" 
                 class="squeak_icon"/>
         </div>
@@ -14,6 +13,8 @@
 </template>
 
 <script>
+import { useMiceStore } from "../stores/mice";
+
 function running(index) {
     return true;
 }
@@ -26,11 +27,10 @@ export default {
         };
     },
     mounted() {
+        const miceStore = useMiceStore();
         this.images = [
-            "/squeak_icons/black_icon.png",
-            "/squeak_icons/blue_icon.png",
-            "/squeak_icons/pink_icon.png",
-            "/squeak_icons/red_icon.png",
+            miceStore.blueIcon,
+            miceStore.blackIcon,
         ];
     },
     methods: {
