@@ -45,8 +45,8 @@ class Coordinate:
     
     def next_coordinate(self):
         """ Updates self coordinates after the target moved """
-        delta_max = 0.00005 #max value to move around
-        delta_min = 0.00001
+        delta_max = 0.0001 #max value to move around
+        delta_min = 0.00005
 
         delta_latitude = np.random.uniform(delta_min, delta_max) * np.random.choice([-1,1])
         while not (in_perimeter(self.latitude + delta_latitude, self.longitude)):
