@@ -45,16 +45,17 @@ class Coordinate:
     
     def next_coordinate(self):
         """ Updates self coordinates after the target moved """
-        delta = 0.000025 #max value to move around
+        delta_max = 0.00005 #max value to move around
+        delta_min = 0.00001
 
-        delta_latitude = np.random.uniform(-delta, delta)
+        delta_latitude = np.random.uniform(delta_min, delta_max) * np.random.choice([-1,1])
         while not (in_perimeter(self.latitude + delta_latitude, self.longitude)):
-            delta_latitude = np.random.uniform(-delta, delta)
+            delta_latitude = np.random.uniform(delta_min, delta_max) * np.random.choice([-1,1])
         self.latitude += delta_latitude
 
-        delta_longitude = np.random.uniform(-delta, delta)
+        delta_longitude = np.random.uniform(delta_min, delta_max) * np.random.choice([-1,1])
         while not (in_perimeter(self.latitude, self.longitude + delta_longitude)):
-            delta_longitude = np.random.uniform(-delta, delta)
+            delta_longitude = np.random.uniform(delta_min, delta_max) * np.random.choice([-1,1])
         self.longitude += delta_longitude
     
     """ Getters and setters """
@@ -78,6 +79,7 @@ class Coordinate:
         return "Latitude : " + str(self.latitude) + " , Longitude : " + str(self.longitude)
     
     def to_string_dms(self):
+
         """ Return a string describing the coordinates in DMS format"""
         def convert_to_dms(x):
             x = abs(x)
@@ -96,6 +98,9 @@ class Coordinate:
         longitude_dms = f"{degrees_longitude}°{minutes_longitude}'{seconds_longitude}\" {direction_longitude}"
 
         return str(latitude_dms) + " " + str(longitude_dms)
+    
+    def copy(self):
+        return Coordinate(self.latitude, self.longitude)
 
 
 def generate_coordinate():
@@ -114,7 +119,7 @@ def in_perimeter(latitude, longitude):
     
 coords = [generate_coordinate()]
 for i in range(10):
-    coords.append(coords[-1])
+    coords.append(coords[-1].copy())
     coords[-1].next_coordinate()
 
 x = [coords[i].get_latitude() for i in range(len(coords))]
