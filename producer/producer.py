@@ -30,9 +30,11 @@ class Coord:
         dictionnary = {'ip': self.ip, 'latitude': self.latitude, 'longitude': self.longitude}
         return json.dumps(dictionnary).encode('utf-8')
 
-producer = KafkaProducer(bootstrap_servers='localhost:9092', retries=5, max_in_flight_requests_per_connection=1)
+producer = KafkaProducer(bootstrap_servers='kafka:9092', retries=5, max_in_flight_requests_per_connection=1)
 
-ip = "IP1" # os.environ.get('PRODUCER_IP')
+ip = os.environ.get('PRODUCER_IP')
+
+print(ip)
 
 # first coordinate
 coordinate = Coord(random(), random(), ip)
@@ -41,3 +43,5 @@ while True:
     producer.send('coordinate_from_tracker', coordinate.json())
     coordinate = coordinate.getNeighbour()
     time.sleep(1)
+    
+    
