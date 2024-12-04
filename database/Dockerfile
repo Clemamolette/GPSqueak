@@ -1,1 +1,0 @@
-# Defines the Docker image for the database.
