@@ -57,6 +57,16 @@ class Coordinate:
         while not (in_perimeter(self.latitude, self.longitude + delta_longitude)):
             delta_longitude = np.random.uniform(delta_min, delta_max) * np.random.choice([-1,1])
         self.longitude += delta_longitude
+
+    def copy(self):
+        """ Returns a deep copy of self, not binded together """
+        return Coordinate(self.latitude, self.longitude)
+    
+    def next_point(self):
+        """ Returns another Coordinate object with updated coordinates """
+        c = self.copy()
+        c.next_coordinate()
+        return c
     
     """ Getters and setters """
     def set_latitude(self, latitude):
@@ -98,9 +108,6 @@ class Coordinate:
         longitude_dms = f"{degrees_longitude}°{minutes_longitude}'{seconds_longitude}\" {direction_longitude}"
 
         return str(latitude_dms) + " " + str(longitude_dms)
-    
-    def copy(self):
-        return Coordinate(self.latitude, self.longitude)
 
 
 def generate_coordinate():
@@ -119,8 +126,7 @@ def in_perimeter(latitude, longitude):
     
 coords = [generate_coordinate()]
 for i in range(10):
-    coords.append(coords[-1].copy())
-    coords[-1].next_coordinate()
+    coords.append(coords[-1].next_point())
 
 x = [coords[i].get_latitude() for i in range(len(coords))]
 y = [coords[i].get_longitude() for i in range(len(coords))]
