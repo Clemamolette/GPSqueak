@@ -7,7 +7,7 @@ import L from "leaflet";
 
 var squeakIcon = L.Icon.extend({
     options: {
-        shadowUrl: 'src/squeak_icons/shadow_icon.png',
+        shadowUrl: '/squeak_icons/shadow_icon.png',
         iconSize:     [35,38],
         shadowSize:   [40, 25],
         iconAnchor:   [0, 20],
@@ -15,8 +15,8 @@ var squeakIcon = L.Icon.extend({
         popupAnchor:  [15, -25]
     }
 });
-var blueIcon = new squeakIcon({iconUrl: 'src/squeak_icons/blue_icon.png'});
-var blackIcon = new squeakIcon({iconUrl: 'src/squeak_icons/black_icon.png'});
+var blueIcon = new squeakIcon({iconUrl: '/squeak_icons/blue_icon.png'});
+var blackIcon = new squeakIcon({iconUrl: '/squeak_icons/black_icon.png'});
 
 function popup(coord) {
   return "Coordonnées :\n" + coord.toString();
@@ -35,6 +35,7 @@ export default {
 
     var polylineBlue = L.polyline(pathBlue, {color: '#4b91bf', weight: '2',  dashArray: '2, 5', dashOffset: '0'}).addTo(map);
     var polylineBlack = L.polyline(pathBlack, {color: '#696969', weight: '2',  dashArray: '2, 5', dashOffset: '0'}).addTo(map);
+
     var lastPointBlue = pathBlue[pathBlue.length - 1];
     var lastPointBlack = pathBlack[pathBlack.length - 1]; 
     var markerBlue = L.marker(lastPointBlue, {icon: blueIcon}).addTo(map).bindPopup(popup(lastPointBlue));

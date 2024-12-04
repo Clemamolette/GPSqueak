@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css';
 import Map from './components/Map.vue'
+import SideBar from './components/SideBar.vue'
 </script>
 
 <template>
   <div>
-    <img src="./logo_gpsqueak.png" class="logo" alt="GPSqueak logo" />
+    <img src="/logo_gpsqueak.png" class="logo" alt="GPSqueak logo" />
   </div>
-  <Map></Map>
+  <div id="app_bis">
+    <SideBar></SideBar>
+    <Map></Map>
+  </div>
+  
 </template>
 
 <style scoped>
@@ -19,5 +24,11 @@ import Map from './components/Map.vue'
 }
 .logo:hover {
   filter: drop-shadow(0 0 2em #eb8d0049);
+}
+
+#app_bis {
+  display: flex;
+  flex-direction: row;
+  gap: 5em;
 }
 </style>
