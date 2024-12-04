@@ -31,10 +31,10 @@ def insert_data(coordinate):
         cursor.close()
         conn.close()
 
-        print("Data inserted successfully!")
+        LOG.info("Data inserted successfully!")
 
     except (Exception, psycopg2.DatabaseError) as error:
-        print(f"Error: {error}")
+        LOG.error(f"Error: {error}")
 
 
 

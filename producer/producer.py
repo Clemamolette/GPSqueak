@@ -5,6 +5,10 @@ import json
 import time
 from random import random
 import os
+import logging
+
+LOG = logging.Logger("Consumer")
+
 
 class Coord:
     latitude : float
@@ -30,11 +34,22 @@ class Coord:
         dictionnary = {'ip': self.ip, 'latitude': self.latitude, 'longitude': self.longitude}
         return json.dumps(dictionnary).encode('utf-8')
 
+
+retries = 5
+
+
+while retries >= 0:
+    try:
+        LOG.info("Trying connection with kafka...")
+        producer = KafkaProducer(bootstrap_servers='kafka:9092', retries=5, max_in_flight_requests_per_connection=1)
+        break
+    except Exception as e:
+        retries -= 1
+        LOG.warning(f"Fail to connect ({e}), retrying in 5 seconds...")
+        time.sleep(5)
 producer = KafkaProducer(bootstrap_servers='kafka:9092', retries=5, max_in_flight_requests_per_connection=1)
 
 ip = os.environ.get('PRODUCER_IP')
-
-print(ip)
 
 # first coordinate
 coordinate = Coord(random(), random(), ip)
