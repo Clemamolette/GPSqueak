@@ -15,7 +15,7 @@ db_params = {
 db_connection, cursor = db.connect(db_params)
 
 @app.get("/position/{ip}/all")
-def get_all_pos(ip : str) -> dict:
+def get_all_position(ip : str) -> dict:
     query = """
         SELECT (coordinates.latitude, coordinates.longitude) FROM coordinates
         WHERE coordinates.ip = """ + ip
@@ -23,7 +23,7 @@ def get_all_pos(ip : str) -> dict:
     return db.fetch_data(query, db_connection, cursor)
 
 @app.get("/position/{ip}")
-def get_last_pos(ip : str) -> dict:
+def get_position(ip : str) -> dict:
     query = """
         SELECT (coordinates.latitude, coordinates.longitude) FROM coordinates
         WHERE coordinates.ip = """ + ip + """
@@ -32,3 +32,18 @@ def get_last_pos(ip : str) -> dict:
         """
     
     return db.fetch_data(query, db_connection, cursor, [ip])
+
+@app.get("/ip")
+def get_ip() -> dict:
+    """fetch all mice ips"""
+    pass
+
+@app.get("/name")
+def get_name() -> dict:
+    """fetch all mice names"""
+    pass
+
+@app.get("/ip/{mouse}")
+def get_ip_of(mouse : str) -> dict:
+    """fetch the requested mouse's ip"""
+    pass
