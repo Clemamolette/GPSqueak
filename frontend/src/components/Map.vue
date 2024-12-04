@@ -12,13 +12,15 @@ var squeakIcon = L.Icon.extend({
         shadowSize:   [40, 25],
         iconAnchor:   [0, 20],
         shadowAnchor: [-5, 5],
-        popupAnchor:  [-3, -76]
+        popupAnchor:  [15, -25]
     }
 });
 var blueIcon = new squeakIcon({iconUrl: 'src/squeak_icons/blue_icon.png'});
 var blackIcon = new squeakIcon({iconUrl: 'src/squeak_icons/black_icon.png'});
 
-
+function popup(coord) {
+  return "Coordonnées :\n" + coord.toString();
+}
 
 export default {
   mounted() {
@@ -34,9 +36,9 @@ export default {
     var polylineBlue = L.polyline(pathBlue, {color: '#4b91bf', weight: '2',  dashArray: '2, 5', dashOffset: '0'}).addTo(map);
     var polylineBlack = L.polyline(pathBlack, {color: '#696969', weight: '2',  dashArray: '2, 5', dashOffset: '0'}).addTo(map);
     var lastPointBlue = pathBlue[pathBlue.length - 1];
-    var lastPointBlack = pathBlack[pathBlack.length - 1];
-    var markerBlue = L.marker(lastPointBlue, {icon: blueIcon}).addTo(map);
-    var markerBlack = L.marker(lastPointBlack, {icon: blackIcon}).addTo(map);
+    var lastPointBlack = pathBlack[pathBlack.length - 1]; 
+    var markerBlue = L.marker(lastPointBlue, {icon: blueIcon}).addTo(map).bindPopup(popup(lastPointBlue));
+    var markerBlack = L.marker(lastPointBlack, {icon: blackIcon}).addTo(map).bindPopup(popup(lastPointBlack));
   },
 };
 </script>
