@@ -17,12 +17,12 @@ def insert_data(coordinate):
 
         # SQL query to insert data
         insert_query = """
-        INSERT INTO coordinates (ip, latitude, longitude)
+        INSERT INTO coordinates (ip, latitude, longitude, t_stamp)
         VALUES (%s, %s, %s)
         """
 
         # Execute the query
-        cursor.execute(insert_query, (coordinate['ip'], coordinate['latitude'], coordinate['longitude']))
+        cursor.execute(insert_query, (coordinate['ip'], coordinate['latitude'], coordinate['longitude'], coordinate['timestamp']))
 
         # Commit the transaction
         conn.commit()
@@ -74,4 +74,5 @@ db_params = {
 
 for message in consumer:
     coordinate = message.value
+    coordinate['timestamp'] = message.timestamp
     insert_data(coordinate)
