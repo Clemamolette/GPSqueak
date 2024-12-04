@@ -1,15 +1,17 @@
 import { defineStore } from 'pinia'
 
+type Coord = [number, number];
+
 export const useMiceStore = defineStore('mice', {
     state: () => ({
 		mouseBlue: {src:"/squeak_icons/blue_icon.png", path:[]},
         mouseBlack: {src:"/squeak_icons/black_icon.png", path:[]} 
 	}),
     actions: {
-		addCoordBlue(coord: Array<number> ) {
+		addCoordBlue(coord: Coord ) {
             this.mouseBlue["path"].push(coord);
         },
-		addCoordBlack(coord: Array<number> ) {
+		addCoordBlack(coord: Coord) {
             this.mouseBlack["path"].push(coord);
         },
 	},
