@@ -111,3 +111,16 @@ def in_perimeter(latitude, longitude):
         return True
     else:
         return False
+    
+coords = [generate_coordinate()]
+for i in range(10):
+    coords.append(coords[-1])
+    coords[-1].next_coordinate()
+
+x = [coords[i].get_latitude() for i in range(len(coords))]
+y = [coords[i].get_longitude() for i in range(len(coords))]
+
+points = []
+for i in range(len(x)):
+    points.append([x[i], y[i]])
+print(points)

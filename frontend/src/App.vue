@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import 'leaflet/dist/leaflet.css';
 import Map from './components/Map.vue'
 </script>
 
@@ -11,7 +12,7 @@ import Map from './components/Map.vue'
 
 <style scoped>
 .logo {
-  height: 15em;
+  height: 12em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
