@@ -1,6 +1,15 @@
 import psycopg2
 
 def insert_data(coordinate : dict, conn, cursor) -> None:
+    """inserts data in the database
+    
+    Keyword arguments:
+    coordinate -- dictionnary of the data to be added to the database
+    conn -- connection to the database (generable from connect)
+    cursor -- cursor of the connection (generable from connect)
+    Return: None
+    """
+    
     try:
         insert_query = """
         INSERT INTO coordinates (ip, latitude, longitude)
@@ -13,6 +22,13 @@ def insert_data(coordinate : dict, conn, cursor) -> None:
         print(f"Error: {error}")
 
 def connect(db_params : dict):
+    """establishes connection to the database
+    
+    Keyword arguments:
+    db_params -- dictionary of the necessary info to connect to the database ('db_name', 'user', 'password', 'host', 'port')
+    Return: None
+    """
+    
     try:
         conn = psycopg2.connect(**db_params)
         cursor = conn.cursor()
@@ -20,10 +36,16 @@ def connect(db_params : dict):
     except (Exception, psycopg2.DatabaseError) as error:
         print(f"Error: {error}")
 
-def fetch_data(query : str, conn, cursor, query_arg_list : list[str]) -> dict:
+def fetch_data(query : str, cursor) -> dict:
+    """fetches data from the conected database based on the provided query
+    
+    Keyword arguments:
+    query -- query to be passed on the database to fecth data. To insert data, please use insert_data
+    Return: results of the query in the form list of list
+    """
+    
     try:
-        query_args = (arg for arg in query_arg_list)
-        cursor.execute(query, query_args)
+        cursor.execute(query)
         query_result = cursor.fetchall()
         query_result = [[query_result[i][j] for j in range(len(query_result[0]))] for i in range(len(query_result))] # list of list of data
         return query_result
@@ -32,6 +54,13 @@ def fetch_data(query : str, conn, cursor, query_arg_list : list[str]) -> dict:
         print(f"Error: {error}")
 
 def disconnect(conn, cursor):
+    """diconnects from the connected database
+    
+    Keyword arguments:
+    conn -- current connection to the database (generated from the connect function)
+    cursor -- current cursor to the connection (generated from the connect function)
+    Return: None
+    """
     try:
         cursor.close()
         conn.close()
