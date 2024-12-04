@@ -9,12 +9,15 @@ Clementine Galloy, Noe Faucher & Mael Triquet
 ![architecture](rsc/schéma%20structure%20projet%20GPS.jpg)
 
 
-## PostgreSQL required package
-Run the following to be able to iteract with the database:
+## UI for server
 
-sudo apt install postgresql postgresql-contrib
-sudo -i -u postgres
-psql
-CREATE DATABASE gpsdatabase;
-CREATE USER admin WITH PASSWORD 'admin';
-GRANT ALL PRIVILEGES ON DATABASE gpsdatabase TO admin;
+### Database 
+UI visible on `localhost:8081`.
+
+serveur: `postgresql:5432`
+utilisateur: `user`
+mot de passe: `pass`
+db: `gps_db`
+
+### Kafka 
+UI visible on `localhost:8080`.

@@ -1,16 +1,12 @@
+#!/bin/python3
 # Python script to consume coordinates from the Kafka topic and interact with the database.
-
-
-
-
-
 from kafka import KafkaConsumer
 import psycopg2
 import json
 
 # !!! NOT TESTED !!!
 consumer = KafkaConsumer('COORDINATE',
-                         bootstrap_servers=['localhost:8080'],
+                         bootstrap_servers=['localhost:9092'],
                          #auto_offset_reset='earliest',
                          #enable_auto_commit=True,
                          #group_id='my-group',
@@ -21,8 +17,8 @@ consumer = KafkaConsumer('COORDINATE',
 # Database connection parameters
 db_params = {
     'dbname': 'gpsdatabase',
-    'user': 'admin',
-    'password': 'admin',
+    'user': 'user',
+    'password': 'pass',
     'host': 'localhost',
     'port': '5432'
 }
@@ -54,6 +50,8 @@ def insert_data(coordinate):
 
     except (Exception, psycopg2.DatabaseError) as error:
         print(f"Error: {error}")
+
+
 
 for message in consumer:
     coordinate = message.value

@@ -1,1 +1,9 @@
-# Defines the Docker image for the consumer.
+FROM python:3.11
+
+ADD ./consumer.py .
+
+ADD ./requirements.txt .
+
+RUN pip install -r requirements.txt
+
+CMD ["python", "./consumer.py"]
