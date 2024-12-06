@@ -27,8 +27,8 @@ LOG.info(ip)
 coordinate = Coordinate.generate_coordinate(ip)
 
 while True:
-    producer.send('coordinate_from_tracker', coordinate.next_coordinate().json())
-    coordinate = coordinate.getNeighbour()
+    producer.send('coordinate_from_tracker', coordinate.json())
+    coordinate.next_coordinate()
     time.sleep(1)
     
     

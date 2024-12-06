@@ -59,8 +59,6 @@ class Coordinate:
         while not (in_perimeter(self.latitude, self.longitude + delta_longitude)):
             delta_longitude = np.random.uniform(delta_min, delta_max) * np.random.choice([-1,1])
         self.longitude += delta_longitude
-        
-        return self
 
     def copy(self):
         """ Returns a deep copy of self, not binded together """
