@@ -21,7 +21,8 @@ même chose pour la ongitude mais avec les directions est (E) si positive et oue
 """
 
 import numpy as np
-from matplotlib import pyplot as plt
+import json
+
 
 """  Global parameters """
 MIN_LATITUDE = -90.
@@ -38,10 +39,11 @@ ACTIVE_MAX_LONGITUDE = -0.387321
 class Coordinate:
     """ Defines one position """
     
-    def __init__(self, latitude = 0., longitude = 0.):
+    def __init__(self, latitude = 0., longitude = 0., ip= ""):
         """ initialisation """
         self.latitude = latitude
         self.longitude = longitude
+        self.ip = ip
     
     def next_coordinate(self):
         """ Updates self coordinates after the target moved """
@@ -57,10 +59,12 @@ class Coordinate:
         while not (in_perimeter(self.latitude, self.longitude + delta_longitude)):
             delta_longitude = np.random.uniform(delta_min, delta_max) * np.random.choice([-1,1])
         self.longitude += delta_longitude
+        
+        return self
 
     def copy(self):
         """ Returns a deep copy of self, not binded together """
-        return Coordinate(self.latitude, self.longitude)
+        return Coordinate(self.latitude, self.longitude, self.ip)
     
     def next_point(self):
         """ Returns another Coordinate object with updated coordinates """
@@ -89,8 +93,8 @@ class Coordinate:
         return "Latitude : " + str(self.latitude) + " , Longitude : " + str(self.longitude)
     
     def to_string_dms(self):
-
         """ Return a string describing the coordinates in DMS format"""
+        
         def convert_to_dms(x):
             x = abs(x)
             degrees = int(x)
@@ -110,12 +114,17 @@ class Coordinate:
         return str(latitude_dms) + " " + str(longitude_dms)
 
 
-def generate_coordinate():
-    """ Returns an randomly-initialized Coordinate object """
-    latitude = np.random.uniform(ACTIVE_MIN_LATITUDE, ACTIVE_MAX_LATITUDE)
-    longitude = np.random.uniform(ACTIVE_MIN_LONGITUDE, ACTIVE_MAX_LONGITUDE)
-    coord = Coordinate(latitude, longitude)
-    return coord
+    def generate_coordinate(ip:str) -> 'Coordinate':
+        """ Returns an randomly-initialized Coordinate object """
+        latitude = np.random.uniform(ACTIVE_MIN_LATITUDE, ACTIVE_MAX_LATITUDE)
+        longitude = np.random.uniform(ACTIVE_MIN_LONGITUDE, ACTIVE_MAX_LONGITUDE)
+        return Coordinate(latitude, longitude,ip)
+    
+    def json(self) -> str:
+        """Serialise coordinate to json"""
+        dictionnary = {'ip': self.ip, 'latitude': self.latitude, 'longitude': self.longitude}
+        return json.dumps(dictionnary).encode('utf-8')
+
 
 def in_perimeter(latitude, longitude):
     """ Returns boolean value for if the position is within the defined perimeter """
@@ -124,14 +133,15 @@ def in_perimeter(latitude, longitude):
     else:
         return False
     
-coords = [generate_coordinate()]
-for i in range(10):
-    coords.append(coords[-1].next_point())
+if __name__ == "__main__":
+    coords = [Coordinate.generate_coordinate("test")]
+    for i in range(10):
+        coords.append(coords[-1].next_point())
 
-x = [coords[i].get_latitude() for i in range(len(coords))]
-y = [coords[i].get_longitude() for i in range(len(coords))]
+    x = [coords[i].get_latitude() for i in range(len(coords))]
+    y = [coords[i].get_longitude() for i in range(len(coords))]
 
-points = []
-for i in range(len(x)):
-    points.append([x[i], y[i]])
-print(points)
+    points = []
+    for i in range(len(x)):
+        points.append([x[i], y[i]])
+    print(points)
