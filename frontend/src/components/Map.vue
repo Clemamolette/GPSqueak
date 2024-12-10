@@ -2,56 +2,74 @@
   <div id="map"></div>
 </template>
 
-<script>
-import L from "leaflet";
-import { useMiceStore } from "../stores/mice";
+<script lang="ts">
+import { defineComponent } from 'vue';
+import L from 'leaflet';
+import { useMiceStore } from '../stores/mice';
 
-var squeakIcon = L.Icon.extend({
-    options: {
-        shadowUrl: '/squeak_icons/shadow_icon.png',
-        iconSize:     [35,38],
-        shadowSize:   [40, 25],
-        iconAnchor:   [0, 20],
-        shadowAnchor: [-5, 5],
-        popupAnchor:  [15, -25]
-    }
-});
+type Coord = [number, number];
 
-function popup(coord) {
-  return "Coordonnées :\n" + coord.toString();
+interface IconOptions extends L.IconOptions {
+  shadowUrl: string;
+  iconSize: [number, number];
+  shadowSize: [number, number];
+  iconAnchor: [number, number];
+  shadowAnchor: [number, number];
+  popupAnchor: [number, number];
+  iconUrl: string
 }
 
-export default {
-  mounted() {
-    const miceStore = useMiceStore(); 
-    const blueIcon = new squeakIcon({ iconUrl: miceStore.blueIcon }); 
-    const blackIcon = new squeakIcon({ iconUrl: miceStore.blackIcon }); 
+// Créer la classe SqueakIcon qui étend L.Icon
+class SqueakIcon extends L.Icon {
+  constructor(options: IconOptions) {
+    super(options);
+  }
+}
 
-    const map = L.map("map").setView([46.661326, -0.399094], 16);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+const optionsDefault = {
+    shadowUrl: '/squeak_icons/shadow_icon.png',
+    iconSize: [35, 38],
+    shadowSize: [40, 25],
+    iconAnchor: [0, 20],
+    shadowAnchor: [-5, 5],
+    popupAnchor: [15, -25]
+  }
+
+
+function popup(coord: Coord): string {
+  return `Coordonnées :\n${coord.toString()}`;
+}
+
+export default defineComponent({
+  name: 'Map',
+  mounted() {
+    const miceStore = useMiceStore();
+    const blueIcon = new SqueakIcon({...optionsDefault, iconUrl: miceStore.mouseBlue.src } as IconOptions);
+    const blackIcon = new SqueakIcon({...optionsDefault, iconUrl: miceStore.mouseBlack.src}  as IconOptions);
+
+    const map = L.map('map').setView([46.661326, -0.399094], 16);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
-    var pathBlue = miceStore.bluePath;
-    var pathBlack = miceStore.blackPath;
+    const pathBlue = miceStore.mouseBlue.path;
+    const pathBlack = miceStore.mouseBlack.path;
 
-    var c1 = [46.66351683019078, -0.4010184024809422];
-    var c2 = [46.661391638682026, -0.39771515366138493];
+    const c1: Coord = [46.66351683019078, -0.4010184024809422];
+    const c2: Coord = [46.661391638682026, -0.39771515366138493];
 
     miceStore.addCoordBlue(c1);
     miceStore.addCoordBlack(c2);
 
-    var polylineBlue = L.polyline(pathBlue, {color: '#4b91bf', weight: '2',  dashArray: '2, 5', dashOffset: '0'}).addTo(map);
-    var polylineBlack = L.polyline(pathBlack, {color: '#696969', weight: '2',  dashArray: '2, 5', dashOffset: '0'}).addTo(map);
+    L.polyline(pathBlue, { color: '#4b91bf', weight: 2, dashArray: '2, 5', dashOffset: 0 }as any).addTo(map);
+    L.polyline(pathBlack, { color: '#696969', weight: 2, dashArray: '2, 5', dashOffset: 0 }as any).addTo(map);
 
-    var lastPointBlue = pathBlue[pathBlue.length - 1];
-    var lastPointBlack = pathBlack[pathBlack.length - 1]; 
-    var markerBlue = L.marker(lastPointBlue, {icon: blueIcon}).addTo(map).bindPopup(popup(lastPointBlue));
-    var markerBlack = L.marker(lastPointBlack, {icon: blackIcon}).addTo(map).bindPopup(popup(lastPointBlack));
+    const lastPointBlue = pathBlue[pathBlue.length - 1];
+    const lastPointBlack = pathBlack[pathBlack.length - 1];
+    L.marker(lastPointBlue, { icon: blueIcon }).addTo(map).bindPopup(popup(lastPointBlue));
+    L.marker(lastPointBlack, { icon: blackIcon }).addTo(map).bindPopup(popup(lastPointBlack));
   }
-};
-
+});
 </script>
 
 <style>

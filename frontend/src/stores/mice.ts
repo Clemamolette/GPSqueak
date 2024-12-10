@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 type Coord = [number, number];
 
-interface Mouse {
+export interface Mouse {
     id: string;
     src: string;
     path: Coord[];

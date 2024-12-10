@@ -12,33 +12,31 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
 import { useMiceStore } from "../stores/mice";
 
-function running(index) {
-    return true;
-}
 
-
-export default {
-    data() {
-        return {
-            images: [],
-        };
+export default defineComponent({
+  name: 'MouseComponent',
+  data() {
+    return {
+      images: [] as string[], 
+    };
+  },
+  mounted() {
+    const miceStore = useMiceStore();
+    this.images = [
+      miceStore.mouseBlue.src,
+      miceStore.mouseBlack.src,
+    ];
+  },
+  methods: {
+    isMouseRunning(index: number): boolean {
+      return index % 2 === 0;
     },
-    mounted() {
-        const miceStore = useMiceStore();
-        this.images = [
-            miceStore.blueIcon,
-            miceStore.blackIcon,
-        ];
-    },
-    methods: {
-        isMouseRunning(index) {
-            return index % 2 === 0; 
-        },
-    },
-};
+  },
+});
 </script>
 
 <style>
