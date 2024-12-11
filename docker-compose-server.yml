@@ -85,7 +85,11 @@ services:
 
 
   ## API
-
+  api:
+    image: api
+    build: ./api
+    ports:
+      - 8084:80
 
 
 
