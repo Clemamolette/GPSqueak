@@ -22,3 +22,24 @@ db: `gps_db`
 ### Kafka 
 UI visible on `localhost:8080`.
 
+### api
+On `localhost:8084`
+
+### Front
+On `localhost:8083`
+
+
+### Lancement
+
+```sh
+    docker compose -f docker-compose-server.yml up
+
+    docker compose -f docker-compose-producer.yml up
+```
+
+
+Pour relancer le front ou l'api:
+```sh
+docker compose -f docker-compose-server.yml down
+docker image rm front:latest # ou api:latest
+```
