@@ -2,8 +2,21 @@ import { defineStore } from 'pinia'
 
 type Coord = [number, number];
 
+export interface Mouse {
+    id: string;
+    src: string;
+    path: Coord[];
+    isActive: boolean;
+}
+
+// Définir l'interface pour l'état global du store
+interface State {
+    mouseBlue: Mouse;
+    mouseBlack: Mouse;
+}
+
 export const useMiceStore = defineStore('mice', {
-    state: () => ({
+    state: ():State => ({
 		mouseBlue: {id:"blue", src:"/squeak_icons/blue_icon.png", path:[], isActive: true},
         mouseBlack: {id:"black", src:"/squeak_icons/black_icon.png", path:[], isActive: true} 
 	}),
