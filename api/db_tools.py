@@ -35,6 +35,7 @@ def connect(db_params : dict):
         return conn, cursor
     except (Exception, psycopg2.DatabaseError) as error:
         print(f"Error: {error}")
+        return None, None
 
 def fetch_data(query : str, cursor) -> dict:
     """fetches data from the conected database based on the provided query

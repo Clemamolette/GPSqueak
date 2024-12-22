@@ -12,8 +12,9 @@ db_params = {
     'port': '5432'
 }
 
-# TODO gerer le cas ou la base n'existe pas 
-db_connection, cursor = db.connect(db_params)
+db_connection = None
+while db_connection == None:
+    db_connection, cursor = db.connect(db_params)
 
 @app.get("/position/{id}/all")
 def get_all_position(id : str) -> dict:
@@ -47,4 +48,3 @@ def get_ip_of(mouse : str) -> dict:
     res = db.fetch_ip_from_name(mouse, cursor)
     print(res)
     return res
-    pass
