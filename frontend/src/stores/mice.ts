@@ -4,7 +4,7 @@ import type { Marker, Polyline } from 'leaflet';
 type Coord = [number, number];
 
 export interface Mouse {
-	id: string;
+	id: number;
 	src: string;
 	path: Coord[];
 	isActive: boolean;
@@ -22,7 +22,7 @@ interface State {
 export const useMiceStore = defineStore('mice', {
     state: ():State => ({
 		mouseBlue: {
-			id: "blue",
+			id: 1,
 			src: "/squeak_icons/blue_icon.png",
 			path: [],
 			isActive: true,
@@ -30,7 +30,7 @@ export const useMiceStore = defineStore('mice', {
 			polyline: null
 		},
 		mouseBlack: {
-			id: "black",
+			id: 2,
 			src: "/squeak_icons/black_icon.png",
 			path: [],
 			isActive: true,

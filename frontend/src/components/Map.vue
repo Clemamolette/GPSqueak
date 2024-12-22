@@ -84,14 +84,6 @@ export default defineComponent({
     miceStore.setPolyline('blue', polylineBlue);
     miceStore.setPolyline('black', polylineBlack);
 
-
-    // essaie avec des coordonnées initiales (pour voir les curseurs)
-    const c1: Coord = [46.66351683019078, -0.4010184024809422];
-    const c2: Coord = [46.661391638682026, -0.39771515366138493];
-
-    miceStore.addCoordBlue(c1);
-    miceStore.addCoordBlack(c2);
-
     // après toutes les initialisations : démarrage de la mise à jour périodique
     this.startUpdates();
   },
@@ -99,16 +91,16 @@ export default defineComponent({
     this.stopUpdates();
   },
   methods: {
-    async fetchMousePosition(ip: string) {
+    async fetchMousePosition(id: number) {
       try {
         // on va chercher l'api
-        const response = await fetch(`${this.apiBaseUrl}/position/${ip}`);
+        const response = await fetch(`${this.apiBaseUrl}/position/${id}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         return await response.json();
       } catch (error) {
-        console.error(`Erreur lors de la récupération de la position pour l'IP ${ip}:`, error);
+        console.error(`Erreur lors de la récupération de la position pour l'ID ${id}:`, error);
         return null;
       }
     },
@@ -118,8 +110,8 @@ export default defineComponent({
       const miceStore = useMiceStore();
       try {
         const [blueData, blackData] = await Promise.all([
-          this.fetchMousePosition('blue_mouse_ip'),
-          this.fetchMousePosition('black_mouse_ip')
+          this.fetchMousePosition(1),
+          this.fetchMousePosition(2)
         ]);
 
         // si on a bien de la donnée, on ajoute les coordonnées dans le store
