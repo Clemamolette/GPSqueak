@@ -2,6 +2,7 @@
 
 from fastapi import FastAPI
 import db_tools as db
+import time
 app = FastAPI()
 
 db_params = {
@@ -12,8 +13,9 @@ db_params = {
     'port': '5432'
 }
 
-db_connection = None
+db_connection, cursor = db.connect(db_params)
 while db_connection == None:
+    time.sleep(5)
     db_connection, cursor = db.connect(db_params)
 
 @app.get("/position/{id}/all")
