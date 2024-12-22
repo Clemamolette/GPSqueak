@@ -41,33 +41,6 @@ export default defineComponent({
     };
   },
   mounted() {
-    /*
-    const miceStore = useMiceStore();
-    const blueIcon = new SqueakIcon({...optionsDefault, iconUrl: miceStore.mouseBlue.src } as IconOptions);
-    const blackIcon = new SqueakIcon({...optionsDefault, iconUrl: miceStore.mouseBlack.src}  as IconOptions);
-
-    const map = L.map('map').setView([46.661326, -0.399094], 16);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(map);
-
-    const pathBlue = miceStore.mouseBlue.path;
-    const pathBlack = miceStore.mouseBlack.path;
-
-    const c1: Coord = [46.66351683019078, -0.4010184024809422];
-    const c2: Coord = [46.661391638682026, -0.39771515366138493];
-
-    miceStore.addCoordBlue(c1);
-    miceStore.addCoordBlack(c2);
-
-    L.polyline(pathBlue, { color: '#4b91bf', weight: 2, dashArray: '2, 5', dashOffset: 0 }as any).addTo(map);
-    L.polyline(pathBlack, { color: '#696969', weight: 2, dashArray: '2, 5', dashOffset: 0 }as any).addTo(map);
-
-    const lastPointBlue = pathBlue[pathBlue.length - 1];
-    const lastPointBlack = pathBlack[pathBlack.length - 1];
-    L.marker(lastPointBlue, { icon: blueIcon }).addTo(map).bindPopup(popup(lastPointBlue));
-    L.marker(lastPointBlack, { icon: blackIcon }).addTo(map).bindPopup(popup(lastPointBlack));
-    */
     const miceStore = useMiceStore();
     const blueIcon = new squeakIcon({ iconUrl: miceStore.blueIcon }); // iconUrl sera définit au L.icon avec le extend
     const blackIcon = new squeakIcon({ iconUrl: miceStore.blackIcon });
