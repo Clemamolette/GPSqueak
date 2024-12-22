@@ -98,6 +98,7 @@ export default defineComponent({
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
         return await response.json();
       } catch (error) {
         console.error(`Erreur lors de la récupération de la position pour l'ID ${id}:`, error);
@@ -109,18 +110,19 @@ export default defineComponent({
     async updatePositions() {
       const miceStore = useMiceStore();
       try {
-        const [blueData, blackData] = await Promise.all([
-          this.fetchMousePosition(1),
-          this.fetchMousePosition(2)
-        ]);
+        const blueData = await this.fetchMousePosition(1);
+        const blackData = await this.fetchMousePosition(2);
 
+        console.log(blueData);
+        console.log(blackData);
+        
         // si on a bien de la donnée, on ajoute les coordonnées dans le store
-        if (blueData) {
-          const blueCoord: [number, number] = [blueData.latitude, blueData.longitude];
+        if (blueData.length > 0) {
+          const blueCoord: [number, number] = blueData[0];
           miceStore.addCoordBlue(blueCoord);
         }
-        if (blackData) {
-          const blackCoord: [number, number] = [blackData.latitude, blackData.longitude];
+        if (blackData.length > 0) {
+          const blackCoord: [number, number] = blackData[0];
           miceStore.addCoordBlack(blackCoord);
         }
       } catch (error) {
@@ -133,7 +135,7 @@ export default defineComponent({
       this.updatePositions();
       this.updateInterval = window.setInterval(() => {
         this.updatePositions();
-      }, 1000);
+      }, 2000);
     },
 
     // arrêt des appels à l'api

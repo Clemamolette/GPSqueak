@@ -37,7 +37,7 @@ def connect(db_params : dict):
         print(f"Error: {error}")
         return None, None
 
-def fetch_data(query : str, cursor) -> dict:
+def fetch_data(query : str, cursor) -> list[list]:
     """fetches data from the conected database based on the provided query
     
     Keyword arguments:
@@ -72,14 +72,14 @@ def disconnect(conn, cursor):
     except (Exception, psycopg2.DatabaseError) as error:
         print(f"Error: {error}")
 
-def fetch_all_positions(id : str, cursor) -> dict:
+def fetch_all_positions(id : str, cursor) -> list:
     query = """
         SELECT coordinates.latitude, coordinates.longitude FROM coordinates
         WHERE coordinates.id_mouse = '%s' """ % id
         
     return fetch_data(query, cursor)
 
-def fetch_last_position(id : str, cursor) -> dict:
+def fetch_last_position(id : str, cursor) -> list:
     query = """
         SELECT coordinates.latitude, coordinates.longitude FROM coordinates
         WHERE coordinates.id_mouse = '%s'
