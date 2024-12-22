@@ -40,8 +40,8 @@ def get_name() -> dict:
     res = db.fetch_name_list(cursor)
     return res
 
-@app.get("/ip/{mouse}")
+@app.get("/id/{mouse}")
 def get_ip_of(mouse : str) -> dict:
-    """fetch the requested mouse's ip"""
+    """fetch the requested mouse's id"""
     res = db.fetch_ip_from_name(mouse, cursor)
     return res
