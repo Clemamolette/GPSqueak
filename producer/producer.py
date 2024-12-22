@@ -7,16 +7,15 @@ import logging
 
 from generate_coordinate import Coordinate
 
-LOG = logging.getLogger()
+LOG = logging.getLogger("Producer")
 
-retries = 5
-while retries >= 0:
+producer = None
+while producer is None:
     try:
         LOG.info("Trying connection with kafka...")
         producer = KafkaProducer(bootstrap_servers='kafka:9092', retries=5, max_in_flight_requests_per_connection=1)
         break
     except Exception as e:
-        retries -= 1
         LOG.warning(f"Fail to connect ({e}), retrying in 5 seconds...")
         time.sleep(5)
 

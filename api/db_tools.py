@@ -82,7 +82,7 @@ def fetch_last_position(ip : str, cursor) -> dict:
     query = """
         SELECT coordinates.latitude, coordinates.longitude FROM coordinates
         WHERE coordinates.ip = '%s'
-        ORDER BY coordinates.id DESC
+        ORDER BY coordinates.t_stamp DESC
         LIMIT 1
         """ % ip
 

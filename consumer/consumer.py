@@ -17,12 +17,12 @@ def insert_data(coordinate):
 
         # SQL query to insert data
         insert_query = """
-        INSERT INTO coordinates (ip, latitude, longitude)
-        VALUES (%s, %s, %s)
+        INSERT INTO coordinates (ip, latitude, longitude, t_stamp)
+        VALUES (%s, %s, %s, %s)
         """
 
         # Execute the query
-        cursor.execute(insert_query, (coordinate['ip'], coordinate['latitude'], coordinate['longitude']))
+        cursor.execute(insert_query, (coordinate['ip'], coordinate['latitude'], coordinate['longitude'], coordinate['timestamp']))
 
         # Commit the transaction
         conn.commit()
@@ -31,10 +31,10 @@ def insert_data(coordinate):
         cursor.close()
         conn.close()
 
-        print("Data inserted successfully!")
+        LOG.info("Data inserted successfully!")
 
     except (Exception, psycopg2.DatabaseError) as error:
-        print(f"Error: {error}")
+        LOG.error(f"Error: {error}")
 
 
 
@@ -74,4 +74,5 @@ db_params = {
 
 for message in consumer:
     coordinate = message.value
+    coordinate['timestamp'] = message.timestamp
     insert_data(coordinate)
