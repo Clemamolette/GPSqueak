@@ -19,32 +19,27 @@ while db_connection == None:
 @app.get("/position/{id}/all")
 def get_all_position(id : str) -> dict:
     res = db.fetch_all_positions(id, cursor)
-    print(res)
     return res
 
 @app.get("/position/{id}")
 def get_position(id : str) -> dict:
     res = db.fetch_last_position(id, cursor)
-    print(res)
     return res
 
 @app.get("/id")
 def get_ip() -> dict:
     """fetch all mice ips"""
     res = db.fetch_ip_list(cursor)
-    print(res)
     return res
 
 @app.get("/name")
 def get_name() -> dict:
     """fetch all mice names"""
     res = db.fetch_name_list(cursor)
-    print(res)
     return res
 
 @app.get("/ip/{mouse}")
 def get_ip_of(mouse : str) -> dict:
     """fetch the requested mouse's ip"""
     res = db.fetch_ip_from_name(mouse, cursor)
-    print(res)
     return res
