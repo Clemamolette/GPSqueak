@@ -71,20 +71,46 @@ def disconnect(conn, cursor):
     except (Exception, psycopg2.DatabaseError) as error:
         print(f"Error: {error}")
 
-def fetch_all_positions(ip : str, cursor) -> dict:
+def fetch_all_positions(id : str, cursor) -> dict:
     query = """
         SELECT coordinates.latitude, coordinates.longitude FROM coordinates
-        WHERE coordinates.ip = '%s' """ % ip
+        WHERE coordinates.id_mouse = '%s' """ % id
         
     return fetch_data(query, cursor)
 
-def fetch_last_position(ip : str, cursor) -> dict:
+def fetch_last_position(id : str, cursor) -> dict:
     query = """
         SELECT coordinates.latitude, coordinates.longitude FROM coordinates
-        WHERE coordinates.ip = '%s'
+        WHERE coordinates.id_mouse = '%s'
         ORDER BY coordinates.t_stamp DESC
         LIMIT 1
-        """ % ip
+        """ % id
 
+    res = fetch_data(query, cursor)
+    return res
+
+def fetch_id_list(cursor) -> dict:
+    query = """
+        SELECT name, MIN(id) AS id
+        FROM mouses
+        GROUP BY name;
+        """
+    res = fetch_data(query, cursor)
+    return res
+
+def fetch_name_list(cursor) -> dict:
+    query = """
+        SELECT DISTINCT name
+        FROM mouses;
+        """
+    res = fetch_data(query, cursor)
+    return res
+
+def fetch_ip_from_name(name : str, cursor) -> dict:
+    query = """
+        SELECT id
+        FROM mouses
+        WHERE name = '%s';
+        """ % name
     res = fetch_data(query, cursor)
     return res
