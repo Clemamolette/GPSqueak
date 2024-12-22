@@ -61,6 +61,7 @@ export default defineComponent({
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.map);
+    miceStore.setMap(this.map);
 
     // on initialise les chemins et les icons de souris
     const polylineBlue = L.polyline([], {

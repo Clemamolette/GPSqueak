@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { Marker, Polyline } from 'leaflet';
+import type { Map, Marker, Polyline } from 'leaflet';
 
 type Coord = [number, number];
 
@@ -17,6 +17,7 @@ export interface Mouse {
 interface State {
     mouseBlue: Mouse;
     mouseBlack: Mouse;
+	map: L.Map | null;
 }
 
 export const useMiceStore = defineStore('mice', {
@@ -36,9 +37,18 @@ export const useMiceStore = defineStore('mice', {
 			isActive: true,
 			marker: null,
 			polyline: null
-		}
+		},
+		map: null
 	}),
     actions: {
+		setMap(map: L.Map) {
+			this.map = map;
+		},
+		setView(coord: Coord) {
+			if (this.map) {
+				this.map.setView(coord, 20);
+			}
+		},
 		setMarker(color: 'blue' | 'black', marker: Marker) {
 			if (color === 'blue') {
 				this.mouseBlue.marker = marker;
