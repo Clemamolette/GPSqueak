@@ -86,7 +86,7 @@ services:
         condition: service_healthy
 
 
-  ## API
+  # API
   api:
     image: api
     build: ./api

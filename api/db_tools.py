@@ -107,7 +107,7 @@ def fetch_name_list(cursor) -> dict:
     res = fetch_data(query, cursor)
     return res
 
-def fetch_ip_from_name(name : str, cursor) -> dict:
+def fetch_id_from_name(name : str, cursor) -> dict:
     query = """
         SELECT id
         FROM mouses

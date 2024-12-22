@@ -1,4 +1,4 @@
-# Python script to serve the front-end API.
+# Python scridt to serve the front-end API.
 
 from fastapi import FastAPI
 import db_tools as db
@@ -29,9 +29,9 @@ def get_position(id : str) -> dict:
     return res
 
 @app.get("/id")
-def get_ip() -> dict:
-    """fetch all mice ips"""
-    res = db.fetch_ip_list(cursor)
+def get_id() -> dict:
+    """fetch all mice ids"""
+    res = db.fetch_id_list(cursor)
     return res
 
 @app.get("/name")
@@ -41,7 +41,7 @@ def get_name() -> dict:
     return res
 
 @app.get("/id/{mouse}")
-def get_ip_of(mouse : str) -> dict:
+def get_id_of(mouse : str) -> dict:
     """fetch the requested mouse's id"""
-    res = db.fetch_ip_from_name(mouse, cursor)
+    res = db.fetch_id_from_name(mouse, cursor)
     return res
