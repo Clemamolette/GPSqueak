@@ -1,3 +1,3 @@
 CREATE TABLE IF NOT EXISTS mouses(id SERIAL PRIMARY KEY, ip VARCHAR(50), name VARCHAR(100));
 
-CREATE TABLE IF NOT EXISTS coordinates(id SERIAL PRIMARY KEY, FOREIGN KEY(id_mouse) REFERENCES mouses(id), latitude FLOAT, longitude FLOAT, t_stamp INT);
+CREATE TABLE IF NOT EXISTS coordinates(id SERIAL PRIMARY KEY, latitude FLOAT, longitude FLOAT, t_stamp INT, id_mouse INT, FOREIGN KEY(id_mouse) REFERENCES mouses(id));
