@@ -9,6 +9,13 @@ import { useMiceStore } from '../stores/mice';
 
 type Coord = [number, number];
 
+interface ComponentData {
+  map: L.Map | null;
+  updateInterval: number | null;
+  apiBaseUrl: string;
+}
+
+// pour la définition des types et options par défaut de l'icon de souris
 interface IconOptions extends L.IconOptions {
   shadowUrl: string;
   iconSize: [number, number];
@@ -18,14 +25,11 @@ interface IconOptions extends L.IconOptions {
   popupAnchor: [number, number];
   iconUrl: string
 }
-
-// Créer la classe SqueakIcon qui étend L.Icon
 class SqueakIcon extends L.Icon {
   constructor(options: IconOptions) {
     super(options);
   }
 }
-
 const optionsDefault = {
     shadowUrl: '/squeak_icons/shadow_icon.png',
     iconSize: [35, 38],
@@ -35,39 +39,110 @@ const optionsDefault = {
     popupAnchor: [15, -25]
   }
 
-
 function popup(coord: Coord): string {
   return `Coordonnées :\n${coord.toString()}`;
 }
 
 export default defineComponent({
-  name: 'Map',
+  data(): ComponentData {
+    return {
+      map: null,
+      updateInterval: null,
+      apiBaseUrl: 'http://localhost:8084'  // A CHANGER SI BESOIN
+    };
+  },
   mounted() {
     const miceStore = useMiceStore();
     const blueIcon = new SqueakIcon({...optionsDefault, iconUrl: miceStore.mouseBlue.src } as IconOptions);
     const blackIcon = new SqueakIcon({...optionsDefault, iconUrl: miceStore.mouseBlack.src}  as IconOptions);
 
-    const map = L.map('map').setView([46.661326, -0.399094], 16);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(map);
+    this.map = L.map("map").setView([46.661326, -0.399094], 16);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(this.map);
 
-    const pathBlue = miceStore.mouseBlue.path;
-    const pathBlack = miceStore.mouseBlack.path;
+    // on initialise les chemins et les icons de souris
+    const polylineBlue = L.polyline([], {
+      color: '#4b91bf',
+      weight: '2',
+      dashArray: '2, 5',
+      dashOffset: '0'
+    }).addTo(this.map);
+    const polylineBlack = L.polyline([], {
+      color: '#696969',
+      weight: '2',
+      dashArray: '2, 5',
+      dashOffset: '0'
+    }).addTo(this.map);
+    const markerBlue = L.marker([0, 0], {icon: blueIcon}).addTo(this.map);
+    const markerBlack = L.marker([0, 0], {icon: blackIcon}).addTo(this.map);
 
-    const c1: Coord = [46.66351683019078, -0.4010184024809422];
-    const c2: Coord = [46.661391638682026, -0.39771515366138493];
+    // puis on les garde dans le store
+    miceStore.setMarker('blue', markerBlue);
+    miceStore.setMarker('black', markerBlack);
+    miceStore.setPolyline('blue', polylineBlue);
+    miceStore.setPolyline('black', polylineBlack);
 
-    miceStore.addCoordBlue(c1);
-    miceStore.addCoordBlack(c2);
+    // après toutes les initialisations : démarrage de la mise à jour périodique
+    this.startUpdates();
+  },
+  beforeUnmount() {
+    this.stopUpdates();
+  },
+  methods: {
+    async fetchMousePosition(id: number) {
+      try {
+        // on va chercher l'api
+        const response = await fetch(`${this.apiBaseUrl}/position/${id}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+      } catch (error) {
+        console.error(`Erreur lors de la récupération de la position pour l'ID ${id}:`, error);
+        return null;
+      }
+    },
 
-    L.polyline(pathBlue, { color: '#4b91bf', weight: 2, dashArray: '2, 5', dashOffset: 0 }as any).addTo(map);
-    L.polyline(pathBlack, { color: '#696969', weight: 2, dashArray: '2, 5', dashOffset: 0 }as any).addTo(map);
+    // mise à jour des positions des deux souris
+    async updatePositions() {
+      const miceStore = useMiceStore();
+      try {
+        const [blueData, blackData] = await Promise.all([
+          this.fetchMousePosition(1),
+          this.fetchMousePosition(2)
+        ]);
 
-    const lastPointBlue = pathBlue[pathBlue.length - 1];
-    const lastPointBlack = pathBlack[pathBlack.length - 1];
-    L.marker(lastPointBlue, { icon: blueIcon }).addTo(map).bindPopup(popup(lastPointBlue));
-    L.marker(lastPointBlack, { icon: blackIcon }).addTo(map).bindPopup(popup(lastPointBlack));
+        // si on a bien de la donnée, on ajoute les coordonnées dans le store
+        if (blueData) {
+          const blueCoord: [number, number] = [blueData.latitude, blueData.longitude];
+          miceStore.addCoordBlue(blueCoord);
+        }
+        if (blackData) {
+          const blackCoord: [number, number] = [blackData.latitude, blackData.longitude];
+          miceStore.addCoordBlack(blackCoord);
+        }
+      } catch (error) {
+        console.error('Erreur lors de la mise à jour des positions:', error);
+      }
+    },
+
+    // fonction pour mettre à jour les positions toutes les x seoncdes
+    startUpdates() {
+      this.updatePositions();
+      this.updateInterval = window.setInterval(() => {
+        this.updatePositions();
+      }, 1000);
+    },
+
+    // arrêt des appels à l'api
+    stopUpdates() {
+      if (this.updateInterval !== null) {
+        window.clearInterval(this.updateInterval);
+        this.updateInterval = null;
+      }
+    }
   }
 });
 </script>
