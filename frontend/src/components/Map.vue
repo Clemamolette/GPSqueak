@@ -15,9 +15,22 @@ interface ComponentData {
   apiBaseUrl: string;
 }
 
-// Créer la classe SqueakIcon qui étend L.Icon
-var squeakIcon = L.Icon.extend({
-  options: {
+// pour la définition des types et options par défaut de l'icon de souris
+interface IconOptions extends L.IconOptions {
+  shadowUrl: string;
+  iconSize: [number, number];
+  shadowSize: [number, number];
+  iconAnchor: [number, number];
+  shadowAnchor: [number, number];
+  popupAnchor: [number, number];
+  iconUrl: string
+}
+class SqueakIcon extends L.Icon {
+  constructor(options: IconOptions) {
+    super(options);
+  }
+}
+const optionsDefault = {
     shadowUrl: '/squeak_icons/shadow_icon.png',
     iconSize: [35, 38],
     shadowSize: [40, 25],
@@ -25,7 +38,6 @@ var squeakIcon = L.Icon.extend({
     shadowAnchor: [-5, 5],
     popupAnchor: [15, -25]
   }
-});
 
 function popup(coord: Coord): string {
   return `Coordonnées :\n${coord.toString()}`;
@@ -41,8 +53,8 @@ export default defineComponent({
   },
   mounted() {
     const miceStore = useMiceStore();
-    const blueIcon = new squeakIcon({ iconUrl: miceStore.blueIcon }); // iconUrl sera définit au L.icon avec le extend
-    const blackIcon = new squeakIcon({ iconUrl: miceStore.blackIcon });
+    const blueIcon = new SqueakIcon({...optionsDefault, iconUrl: miceStore.mouseBlue.src } as IconOptions);
+    const blackIcon = new SqueakIcon({...optionsDefault, iconUrl: miceStore.mouseBlack.src}  as IconOptions);
 
     this.map = L.map("map").setView([46.661326, -0.399094], 16);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {

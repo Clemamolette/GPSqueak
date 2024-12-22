@@ -3,10 +3,10 @@ import type { Marker, Polyline } from 'leaflet';
 
 type Coord = [number, number];
 
-interface Mouse {
+export interface Mouse {
 	id: string;
 	src: string;
-	path: [number, number][];
+	path: Coord[];
 	isActive: boolean;
 	marker: Marker | null;
 	polyline: Polyline | null;
@@ -53,14 +53,14 @@ export const useMiceStore = defineStore('mice', {
 				this.mouseBlack.polyline = polyline;
 			}
 		},
-		addCoordBlue(coord: [number, number]) {
+		addCoordBlue(coord: Coord) {
 			this.mouseBlue.path.push(coord);
 			if (this.mouseBlue.marker && this.mouseBlue.polyline) {
 				this.mouseBlue.marker.setLatLng(coord);
 				this.mouseBlue.polyline.setLatLngs(this.mouseBlue.path);
 			}
 		},
-		addCoordBlack(coord: [number, number]) {
+		addCoordBlack(coord: Coord) {
 			this.mouseBlack.path.push(coord);
 			if (this.mouseBlack.marker && this.mouseBlack.polyline) {
 				this.mouseBlack.marker.setLatLng(coord);
@@ -75,12 +75,6 @@ export const useMiceStore = defineStore('mice', {
 		}
 	},
 	getters: {
-		blue: (state) => state.mouseBlue,
-		black: (state) => state.mouseBlack,
-		blueIcon: (state) => state.mouseBlue.src,
-		blackIcon: (state) => state.mouseBlack.src,
-		bluePath: (state) => state.mouseBlue.path,
-		blackPath: (state) => state.mouseBlack.path,
 		blueLastCoord: (state) => state.mouseBlue.path[state.mouseBlue.path.length - 1],
 		blackLastCoord: (state) => state.mouseBlack.path[state.mouseBlack.path.length - 1],
 		blueActive: (state) => state.mouseBlue.isActive,
