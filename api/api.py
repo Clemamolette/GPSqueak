@@ -33,15 +33,3 @@ def get_id() -> dict:
     """fetch all mice ids"""
     res = db.fetch_id_list(cursor)
     return res
-
-@app.get("/name")
-def get_name() -> dict:
-    """fetch all mice names"""
-    res = db.fetch_name_list(cursor)
-    return res
-
-@app.get("/id/{mouse}")
-def get_id_of(mouse : str) -> dict:
-    """fetch the requested mouse's id"""
-    res = db.fetch_id_from_name(mouse, cursor)
-    return res
