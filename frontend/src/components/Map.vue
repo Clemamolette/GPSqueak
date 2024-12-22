@@ -13,7 +13,6 @@ interface ComponentData {
   map: L.Map | null;
   updateInterval: number | null;
   apiBaseUrl: string;
-  refreshRate: 1000;  // appel à l'api toutes les x ms
 }
 
 // Créer la classe SqueakIcon qui étend L.Icon
@@ -130,7 +129,7 @@ export default defineComponent({
       this.updatePositions();
       this.updateInterval = window.setInterval(() => {
         this.updatePositions();
-      }, this.refreshRate);
+      }, 1000);
     },
 
     // arrêt des appels à l'api
