@@ -48,7 +48,7 @@ export default defineComponent({
     return {
       map: null,
       updateInterval: null,
-      apiBaseUrl: 'http://localhost:80'  // A CHANGER SI BESOIN
+      apiBaseUrl: 'http://localhost:8084'  // A CHANGER SI BESOIN
     };
   },
   mounted() {
