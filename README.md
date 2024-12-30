@@ -6,7 +6,7 @@ Clementine Galloy, Noe Faucher & Mael Triquet
 
 ## Architecture
 
-![architecture](rsc/schéma%20structure%20projet%20GPS.jpg)
+![architecture](rsc/archi_gps_squeak.png)
 
 
 ## UI for server
@@ -21,6 +21,8 @@ db: `gps_db`
 
 ### Kafka 
 UI visible on `localhost:8080`.
+
+kafka on port 9092,9093 
 
 ### api
 On `localhost:8084`
@@ -38,8 +40,8 @@ On `localhost:8083`
 ```
 
 
-Pour relancer le front ou l'api:
+Pour relancer le front,l'api, le consumer ou le producer après modification:
 ```sh
-docker compose -f docker-compose-server.yml down
-docker image rm front:latest # ou api:latest
+docker compose -f docker-compose-server.yml down # ou docker-compose-producer.yml
+docker image rm front:latest # ou api:latest ou ...
 ```

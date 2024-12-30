@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import db_tools as db
 import time
-app = FastAPI()
+import threading
 
 origins = [
     "http://localhost",
@@ -13,13 +13,6 @@ origins = [
     "http://localhost:5173",
 ]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 
 
@@ -32,23 +25,65 @@ db_params = {
     'port': '5432'
 }
 
-db_connection, cursor = db.connect(db_params)
-while db_connection == None:
-    time.sleep(5)
-    db_connection, cursor = db.connect(db_params)
+
+def try_connect(db_connection, db_params):
+    while db_connection is None or db_connection.closed != 0:
+        db_connection = db.connect(db_params)
+        time.sleep(5)
+    return db_connection
+
+db_connection = None
+db_connection = try_connect(db_connection, db_params)
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/position/{id}/all")
-def get_all_position(id : str) -> list:
-    res = db.fetch_all_positions(id, cursor)
-    return res
+def get_all_position(id: str) -> list:
+    global db_connection
+    if db_connection.closed != 0:
+        db_connection = try_connect(db_connection, db_params)
+        
+    cursor = db_connection.cursor()
+    try:
+        res = db.fetch_all_positions(id, cursor)
+        # print(f"/position/{id}/all =>", res)
+        return res
+    finally:
+        cursor.close()
 
 @app.get("/position/{id}")
-def get_position(id : str) -> list:
-    res = db.fetch_last_position(id, cursor)
-    return res
+def get_position(id: str) -> list:
+    global db_connection
+    if db_connection.closed != 0:
+        db_connection = try_connect(db_connection, db_params)
+
+    cursor = db_connection.cursor()
+    try:
+        res = db.fetch_last_position(id, cursor)
+        # print(f"/position/{id} =>", res)
+        return res
+    finally:
+        cursor.close()
 
 @app.get("/id")
 def get_id() -> dict:
     """fetch all mice ids"""
-    res = db.fetch_id_list(cursor)
-    return res
+    global db_connection
+    if db_connection.closed != 0:
+        db_connection = try_connect(db_connection, db_params)
+
+    cursor = db_connection.cursor()
+    try:
+        res = db.fetch_id_list(cursor)
+        # print(f"/id =>", res)
+        return res
+    finally:
+        cursor.close()

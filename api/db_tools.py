@@ -1,25 +1,7 @@
 import psycopg2
 
-def insert_data(coordinate : dict, conn, cursor) -> None:
-    """inserts data in the database
-    
-    Keyword arguments:
-    coordinate -- dictionnary of the data to be added to the database
-    conn -- connection to the database (generable from connect)
-    cursor -- cursor of the connection (generable from connect)
-    Return: None
-    """
-    
-    try:
-        insert_query = """
-        INSERT INTO coordinates (ip, latitude, longitude)
-        VALUES ('%s', %s, %s)
-        """
-
-        cursor.execute(insert_query, (coordinate['ip'], coordinate['latitude'], coordinate['longitude']))
-        conn.commit()
-    except (Exception, psycopg2.DatabaseError) as error:
-        print(f"Error: {error}")
+import logging
+LOG = logging.Logger("API db lib")
 
 def connect(db_params : dict):
     """establishes connection to the database
@@ -31,11 +13,10 @@ def connect(db_params : dict):
     
     try:
         conn = psycopg2.connect(**db_params)
-        cursor = conn.cursor()
-        return conn, cursor
+        return conn
     except (Exception, psycopg2.DatabaseError) as error:
-        print(f"Error: {error}")
-        return None, None
+        LOG.error(f"Error: {error}")
+        return None
 
 def fetch_data(query : str, cursor) -> list[list]:
     """fetches data from the conected database based on the provided query
@@ -56,7 +37,7 @@ def fetch_data(query : str, cursor) -> list[list]:
         return query_result
 
     except (Exception, psycopg2.DatabaseError) as error:
-        print(f"Error: {error}")
+        LOG.error(f"Error: {error}")
 
 def disconnect(conn, cursor):
     """diconnects from the connected database
@@ -70,7 +51,7 @@ def disconnect(conn, cursor):
         cursor.close()
         conn.close()
     except (Exception, psycopg2.DatabaseError) as error:
-        print(f"Error: {error}")
+        LOG.error(f"Error: {error}")
 
 def fetch_all_positions(id : str, cursor) -> list:
     query = """

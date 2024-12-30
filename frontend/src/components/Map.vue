@@ -5,136 +5,119 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import L from 'leaflet';
-import { useMiceStore } from '../stores/mice';
+import { Mouse, useMiceStore } from '../stores/mice';
 
 type Coord = [number, number];
 
 interface ComponentData {
-  map: L.Map | null;
-  updateInterval: number | null;
+  map?: L.Map;
+  updateInterval?: number;
+  images: string[];
   apiBaseUrl: string;
 }
 
-// pour la définition des types et options par défaut de l'icon de souris
-interface IconOptions extends L.IconOptions {
-  shadowUrl: string;
-  iconSize: [number, number];
-  shadowSize: [number, number];
-  iconAnchor: [number, number];
-  shadowAnchor: [number, number];
-  popupAnchor: [number, number];
-  iconUrl: string
-}
-class SqueakIcon extends L.Icon {
-  constructor(options: IconOptions) {
-    super(options);
-  }
-}
-const optionsDefault = {
-    shadowUrl: '/squeak_icons/shadow_icon.png',
-    iconSize: [35, 38],
-    shadowSize: [40, 25],
-    iconAnchor: [0, 20],
-    shadowAnchor: [-5, 5],
-    popupAnchor: [15, -25]
-  }
 
 function popup(coord: Coord): string {
   return `Coordonnées :\n${coord.toString()}`;
 }
 
 export default defineComponent({
+  name:"MapComponent",
   data(): ComponentData {
     return {
-      map: null,
-      updateInterval: null,
+      map: undefined,
+      images: ["icon_aquamarine.svg","icon_black.svg","icon_blue.svg","icon_blueviolet.svg","icon_chartreuse.svg","icon_green.svg","icon_pink.svg","icon_red.svg","icon_yellow.svg"],
+      updateInterval: undefined,
       apiBaseUrl: 'http://localhost:8084'  // A CHANGER SI BESOIN
     };
   },
   mounted() {
     const miceStore = useMiceStore();
-    const blueIcon = new SqueakIcon({...optionsDefault, iconUrl: miceStore.mouseBlue.src } as IconOptions);
-    const blackIcon = new SqueakIcon({...optionsDefault, iconUrl: miceStore.mouseBlack.src}  as IconOptions);
-
+    
     this.map = L.map("map").setView([46.661326, -0.399094], 16);
+
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(this.map);
-    miceStore.setMap(this.map);
+    }).addTo(this.map as L.Map);
 
-    // on initialise les chemins et les icons de souris
-    const polylineBlue = L.polyline([], {
-      color: '#4b91bf',
-      weight: '2',
-      dashArray: '2, 5',
-      dashOffset: '0'
-    }).addTo(this.map);
-    const polylineBlack = L.polyline([], {
-      color: '#696969',
-      weight: '2',
-      dashArray: '2, 5',
-      dashOffset: '0'
-    }).addTo(this.map);
-    const markerBlue = L.marker([0, 0], {icon: blueIcon}).addTo(this.map);
-    const markerBlack = L.marker([0, 0], {icon: blackIcon}).addTo(this.map);
+    miceStore.setMap(this.map as L.Map);
 
-    // puis on les garde dans le store
-    miceStore.setMarker('blue', markerBlue);
-    miceStore.setMarker('black', markerBlack);
-    miceStore.setPolyline('blue', polylineBlue);
-    miceStore.setPolyline('black', polylineBlack);
-
-    // après toutes les initialisations : démarrage de la mise à jour périodique
     this.startUpdates();
   },
   beforeUnmount() {
     this.stopUpdates();
   },
   methods: {
-    async fetchMousePosition(id: number) {
-      try {
-        // on va chercher l'api
-        const response = await fetch(`${this.apiBaseUrl}/position/${id}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        return await response.json();
-      } catch (error) {
-        console.error(`Erreur lors de la récupération de la position pour l'ID ${id}:`, error);
-        return null;
-      }
+    fetchMousePosition(id: number) {
+      return fetch(`${this.apiBaseUrl}/position/${id}`);
+    },
+    
+    fetchMousesCall() {
+      return fetch(`${this.apiBaseUrl}/id`);
     },
 
     // mise à jour des positions des deux souris
-    async updatePositions() {
+    updatePositions() {
       const miceStore = useMiceStore();
-      try {
-        const blueData = await this.fetchMousePosition(1);
-        const blackData = await this.fetchMousePosition(2);
+      const mouses = miceStore.mouses;
 
-        console.log(blueData);
-        console.log(blackData);
-        
-        // si on a bien de la donnée, on ajoute les coordonnées dans le store
-        if (blueData.length > 0) {
-          const blueCoord: [number, number] = blueData[0];
-          miceStore.addCoordBlue(blueCoord);
-        }
-        if (blackData.length > 0) {
-          const blackCoord: [number, number] = blackData[0];
-          miceStore.addCoordBlack(blackCoord);
-        }
-      } catch (error) {
-        console.error('Erreur lors de la mise à jour des positions:', error);
-      }
+      mouses.forEach((mouse,index) => {
+        this.fetchMousePosition(mouse.id)
+        .then((res) => res.json())
+        .then((value) => {
+            if (value.length > 0) {
+              let coord: [number, number] = value[0];
+              miceStore.addCoord(index,coord);
+            }
+          })
+        .catch((error) => {
+          console.error('Erreur lors de la mise à jour des positions:', error);
+        });
+      });
     },
 
+    fetchMouses() {
+      const miceStore = useMiceStore();
+      this.fetchMousesCall()
+        .then((res) => res.json())
+        .then((val) => {
+          for(const [k,v] of Object.entries(val)) {
+
+
+            if (miceStore.mouseExist(v as number)) {
+              continue;
+            }
+
+            let img_src = "icon_black.svg";
+            if (this.images.length>0) {
+              let i = Math.floor(Math.random() * this.images.length);
+              img_src = this.images[i]
+              this.images.splice(i,1);
+            }
+
+            let mouse: Mouse = {
+              id: v as number,
+              name: k as string,
+              src: '/squeak_icons/'+img_src,
+              path: [],
+              isActive: true
+            }
+            miceStore.addMouse(mouse);
+          }
+        }).catch((error) => {
+          console.error('Erreur lors de la récupération des souris:', error);
+        });
+
+    },
+
+
     // fonction pour mettre à jour les positions toutes les x seoncdes
-    startUpdates() {
+    async startUpdates() {
+      this.fetchMouses();
       this.updatePositions();
-      this.updateInterval = window.setInterval(() => {
+      this.updateInterval = window.setInterval(async () => {
+        this.fetchMouses();
         this.updatePositions();
       }, 2000);
     },
@@ -143,7 +126,7 @@ export default defineComponent({
     stopUpdates() {
       if (this.updateInterval !== null) {
         window.clearInterval(this.updateInterval);
-        this.updateInterval = null;
+        this.updateInterval = undefined;
       }
     }
   }

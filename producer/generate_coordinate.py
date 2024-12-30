@@ -22,6 +22,9 @@ même chose pour la ongitude mais avec les directions est (E) si positive et oue
 
 import numpy as np
 import json
+import logging
+
+LOG = logging.getLogger("PRODUCER")
 
 
 """  Global parameters """
@@ -75,14 +78,14 @@ class Coordinate:
         if (MIN_LATITUDE < latitude) and (latitude < MIN_LATITUDE) and (type(latitude) == float):
             self.latitude = latitude
         else:
-            print("Format ou valeur invalide, saisissez un flottant entre", MIN_LATITUDE, "et", MAX_LATITUDE)
+            LOG.error("Format ou valeur invalide, saisissez un flottant entre", MIN_LATITUDE, "et", MAX_LATITUDE)
     def get_latitude(self):
         return self.latitude
     def set_longitude(self, longitude):
         if (MIN_LONGITUDE < longitude) and (longitude < MAX_LONGITUDE) and (type(longitude) == float):
             self.longitude = longitude
         else:
-            print("Format ou valeur invalide, saisissez un flottant entre", MIN_LONGITUDE, "et", MAX_LONGITUDE)
+            LOG.error("Format ou valeur invalide, saisissez un flottant entre", MIN_LONGITUDE, "et", MAX_LONGITUDE)
     def get_longitude(self):
         return self.longitude
 

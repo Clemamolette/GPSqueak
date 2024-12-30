@@ -1,47 +1,83 @@
 <template>
     <div id="sidebar">
-        <p> Click to take a closer look</p>
-        <div id="mice">
-            <img 
-                v-for="(image, index) in images" 
-                :key="index" 
-                :src="image" 
-                alt="squeak icon" 
-                class="squeak_icon"
-                v-on:click="goToMouse(index)"
-                />
-        </div>
+
+              
+
+      <p> Click to take a closer look</p>
+      <div id="mice">
+          <img 
+              v-for="(image, index) in images" 
+              :key="index" 
+              :src="image" 
+              alt="squeak icon" 
+              class="squeak_icon"
+              v-on:click="goToMouse(index)"
+              />
+
+      </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, onMounted, watch} from 'vue';
 import { useMiceStore } from "../stores/mice";
 
 
 export default defineComponent({
   name: 'MouseComponent',
-  data() {
-    return {
-      images: [] as string[], 
-    };
-  },
-  mounted() {
-    const miceStore = useMiceStore();
-    this.images = [
-      miceStore.mouseBlue.src,
-      miceStore.mouseBlack.src,
-    ];
-  },
-  methods: {
-    goToMouse(index: number): void {
+  setup() {
       const miceStore = useMiceStore();
-      const coord = index === 0 ? miceStore.blueLastCoord : miceStore.blackLastCoord;
-      if (coord) {
-        miceStore.setView(coord);
-      }
+      const images = ref<string[]>([]);
+
+      onMounted(() => {
+        miceStore.mouses.forEach((value) => {
+          images.value.push(value.src);
+        });
+      });
+      
+      watch(() => miceStore.mouses.length,
+            (_new_length) => {
+              miceStore.mouses.forEach((value) => {
+                images.value.push(value.src);
+              });
+            }
+      );
+
+      const goToMouse = (index: number): void => {
+        const coord = miceStore.getMouseCoord(index);
+        if (coord) {
+          miceStore.setView(coord);
+        }
+      };
+
+      return {
+        images,
+        goToMouse,
+      };
     },
-  },
+
+  // data() {
+  //   return {
+  //     images: [] as string[], 
+  //   };
+  // },
+  // mounted() {
+  //   const miceStore = useMiceStore();
+    
+  //   miceStore.mouses.forEach((value) => {
+  //     this.images.push(value.src);
+  //   });
+
+  // },
+  // methods: {
+  //   goToMouse(index: number): void {
+  //     const miceStore = useMiceStore();
+  //     const coord = miceStore.getMouseCoord(index);
+  //     if (coord) {
+  //       miceStore.setView(coord);
+  //     }
+  //   },
+  // },
 });
 </script>
 
@@ -62,7 +98,10 @@ export default defineComponent({
 
     .squeak_icon {
         width: 4em;
+        height: 4em;
         filter: drop-shadow(0 0 1.2em #ffffff28);
+        background-size: 100% 100%;
+
     }
     .squeak_icon:hover {
       filter: drop-shadow(0 0 1.2em #ffffffcb);

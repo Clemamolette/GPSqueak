@@ -67,6 +67,9 @@ services:
   adminer:
     image: adminer
     restart: always
+    depends_on:
+      postgresql:
+        condition: service_healthy
     ports:
       - 8081:8080
 
