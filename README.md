@@ -4,6 +4,8 @@ Clementine Galloy, Noe Faucher & Mael Triquet
 <img src="rsc/logo_gpsqueak.png" width="500em">
 
 
+Gotta Pursue the Squeak est un projet qui permet de traquer les souris 🐁 de Pougne-Hérisson pour aider nos amis les chats 🐱.
+
 ## Architecture
 
 ![architecture](rsc/archi_gps_squeak.png)
