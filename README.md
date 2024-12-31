@@ -12,6 +12,8 @@ Clementine Galloy, Noe Faucher & Mael Triquet
 ## UI for server
 
 ### Database 
+Atention ! Un volume `../postgres` (relative à la racine du projet) est créé.
+
 UI visible on `localhost:8081`.
 
 serveur: `postgresql:5432`
